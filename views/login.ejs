@@ -2,9 +2,10 @@
 <html lang="en">
   <head>
       <%- include("./common/head") %> 
-      <link rel="stylesheet" href="css/authPage.css">
+      <link rel="stylesheet" href="/css/authPage.css">
   </head>
   <body>
+    <%- include('./common/alert',{messages:messages}) %>
   <section class="h-100 gradient-form" style="background-color: #eee;">
       <div class="container py-5 h-100">
         <div class="row d-flex justify-content-center align-items-center h-100">
@@ -20,7 +21,7 @@
                       <h4 class="mt-1 mb-5 pb-1">We are The Fruitfy Team</h4>
                     </div>
     
-                    <form action="/login" method="post">
+                    <form action="/user/login" method="post">
                       <p>Please login to your account</p>
                       
 
@@ -47,7 +48,7 @@
                     </form>
                     <div class="d-flex align-items-center justify-content-center pb-4">
                       <p class="mb-0 me-2">Don't have an account?</p>
-                      <a href="/register"><button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-danger">Create new</button></a>
+                      <a href="/user/register"><button type="submit" data-mdb-button-init data-mdb-ripple-init class="btn btn-outline-danger">Create new</button></a>
                     </div>
                   </div>
                 </div>

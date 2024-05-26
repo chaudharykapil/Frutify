@@ -6,12 +6,12 @@
     </head>
 
     <body>
-
+        <%- include('./common/alert',{messages:messages}) %>
         <!-- Spinner Start -->
         <%- include('./common/spinner') %>
         <!-- Spinner End -->
 
-        <%- include('./common/NavBar') %>
+        <%- include('./common/NavBar',{curr_user:curr_user}) %>
         
         <!-- Modal Search Start -->
         <%- include('./common/searchModal') %>
