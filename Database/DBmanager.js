@@ -1,5 +1,5 @@
 const { initializeApp } = require("firebase/app");
-const { getFirestore, addDoc, setDoc, doc, updateDoc, getDoc } =  require("firebase/firestore");
+const { getFirestore, addDoc, setDoc, doc, updateDoc, getDoc, getDocs } =  require("firebase/firestore");
 const { getStorage, ref } = require("firebase/storage");
 const { collection } =  require("firebase/firestore")
 
@@ -12,7 +12,7 @@ const firebaseConfig = {
     storageBucket: "fruitfy-76ad8.appspot.com",
     messagingSenderId: "689446193156",
     appId: "1:689446193156:web:3d8b3341d5ef142694cd51"
-};
+  };
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
 // Initialize Cloud Firestore and get a reference to the service
@@ -23,6 +23,29 @@ const storage = getStorage(app)
 const UserCollection = collection(db, "users")
 const productCollection = collection(db,"products")
 const cartCollection = collection(db,"carts")
+
+const get_all_user = async ()=>{
+    const user_ref = await getDocs(UserCollection);
+    let userlist = []
+    user_ref.forEach((u)=>userlist.push({id:u.id,data:u.data()}))
+    return userlist
+}
+
+const add_new_user = async(user)=>{
+    let flag = true
+    const userlist = await get_all_user()
+    if(userlist.length != 0){
+        userlist.forEach(u=>{
+            if(u.data.email == email){
+            flag = false
+            }
+        })
+    }
+    if(flag){
+        await addDoc(UserCollection,user)
+    }
+    return flag
+}
 
 const get_product = async (p_id)=>{
     const docRef = doc(db, "products", p_id);
@@ -46,5 +69,5 @@ const update_cart = async (u_id,data)=>{
 }
 console.log("Database connected")
 
-module.exports = {UserCollection,productCollection,cartCollection,storage,update_cart,addToCart,get_cart,get_product}
+module.exports = {UserCollection,productCollection,cartCollection,storage,update_cart,addToCart,get_cart,get_product,add_new_user,get_all_user}
 

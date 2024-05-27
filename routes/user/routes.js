@@ -1,27 +1,21 @@
 var express = require('express');
 var router = express.Router();
-const multer = require("multer")
-// const { UserCollection, addDoc } = require( "firebase/firestore"); 
-const { addDoc, getDocs } =  require("firebase/firestore")
-const {UserCollection,productCollection} = require("../../Database/DBmanager")
-const upload = multer({ dest: 'uploads/' })
+const {add_new_user, get_all_user} = require("../../Database/DBmanager")
 /* GET home page. */
 router.get("/login", (req,res)=>{
   res.render("login", { messages: req.flash('message') })
 });
 router.post("/login", async(req,res) =>{
   const{ email,password } = req.body;
-  const userlist = await getDocs(UserCollection);
+  const userlist = await get_all_user()
   let flag = false
-  console.log(req.body)
-  if(userlist.size == 0){
+  if(userlist.length == 0){
     req.flash('message',"Please register")
     res.redirect("/user/register")
     return
   }
   userlist.forEach(u=>{
-    console.log(u.data())
-    if(u.data().email == email && u.data().password == password){
+    if(u.data.email == email && u.data.password == password){
       flag = true
       req.session.curruser = u.id
       req.flash('message','You are successfully logged in!')
@@ -42,24 +36,13 @@ router.get("/register", (req,res)=>{
 
 router.post("/register", async(req,res) =>{
   const{ email,password } = req.body;
-  const userlist = await getDocs(UserCollection);
-  let flag = false
-  if(userlist.size != 0){
-    userlist.forEach(u=>{
-        if(u.data().email == email){
-          flag = true
-        }
-      })
-  }
-  if(!flag){
-    await addDoc(UserCollection,{
-        email : email,
-        password:password
-    })
-    req.flash('message',"You are registered successfully!")
+  const user = {email:email,password:password}
+  const isadded = await add_new_user(user)
+  if(isadded){
+    req.flash("message","User Registerd Succcessfully")
   }
   else{
-    req.flash('message',"You are already registered! Please login")
+    req.flash("message","User Already successfull")
   }
   res.redirect('/user/login');
 });
