@@ -3,7 +3,7 @@ var router = express.Router();
 const multer = require("multer")
 // const { UserCollection, addDoc } = require( "firebase/firestore"); 
 const { addDoc, getDocs } =  require("firebase/firestore")
-const {UserCollection,productCollection} = require("../Database/DBmanager")
+const {UserCollection,productCollection, get_all_products} = require("../Database/DBmanager")
 const upload = multer({ dest: 'uploads/' })
 
 router.get("/admin",(req,res)=>{
@@ -11,11 +11,11 @@ router.get("/admin",(req,res)=>{
 })
 
 router.get('/', async (req, res) =>{
-  const productlist = await getDocs(productCollection)
+  const productlist = await get_all_products()
   const curr_user = req.session.curruser
   console.log(curr_user)
-  console.log(productlist.docs)
-  res.render('index',{curr_user:curr_user,allproducts:productlist.docs,messages:req.flash("message")});
+  console.log(productlist)
+  res.render('index',{curr_user:curr_user,allproducts:productlist,messages:req.flash("message")});
 });
 
 

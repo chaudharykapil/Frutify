@@ -6,12 +6,12 @@ const { collection } =  require("firebase/firestore")
 // TODO: Replace the following with your app's Firebase project configuration
 // See: https://support.google.com/firebase/answer/7015592
 const firebaseConfig = {
-    apiKey: "AIzaSyD6n4CeDTtenyRLsMRy2Czl3AnQegzVFHE",
-    authDomain: "fruitfy-76ad8.firebaseapp.com",
-    projectId: "fruitfy-76ad8",
-    storageBucket: "fruitfy-76ad8.appspot.com",
-    messagingSenderId: "689446193156",
-    appId: "1:689446193156:web:3d8b3341d5ef142694cd51"
+    apiKey: "AIzaSyC67kI0sRiOCfcVb0PkdaQJ9aUpwMeEIT0",
+    authDomain: "frutify-fb220.firebaseapp.com",
+    projectId: "frutify-fb220",
+    storageBucket: "frutify-fb220.appspot.com",
+    messagingSenderId: "780831226756",
+    appId: "1:780831226756:web:fd07768c820b2354aefbd1"
   };
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
@@ -30,13 +30,17 @@ const get_all_user = async ()=>{
     user_ref.forEach((u)=>userlist.push({id:u.id,data:u.data()}))
     return userlist
 }
+const get_userByID = async (u_id)=>{
+    const docRef = doc(db, "users", u_id);
+    return await getDoc(docRef);
+}
 
 const add_new_user = async(user)=>{
     let flag = true
     const userlist = await get_all_user()
     if(userlist.length != 0){
         userlist.forEach(u=>{
-            if(u.data.email == email){
+            if(u.data.email == user.email){
             flag = false
             }
         })
@@ -47,6 +51,10 @@ const add_new_user = async(user)=>{
     return flag
 }
 
+const get_all_products = async()=>{
+    const data = await getDocs(productCollection)
+    return data.docs
+}
 const get_product = async (p_id)=>{
     const docRef = doc(db, "products", p_id);
     return await getDoc(docRef);
@@ -69,5 +77,19 @@ const update_cart = async (u_id,data)=>{
 }
 console.log("Database connected")
 
-module.exports = {UserCollection,productCollection,cartCollection,storage,update_cart,addToCart,get_cart,get_product,add_new_user,get_all_user}
+module.exports = 
+{
+    UserCollection,
+    productCollection,
+    cartCollection,
+    storage,
+    update_cart,
+    addToCart,
+    get_cart,
+    get_product,
+    add_new_user,
+    get_all_user,
+    get_userByID,
+    get_all_products
+}
 

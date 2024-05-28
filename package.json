@@ -6,6 +6,7 @@
     "start": "npx nodemon ./bin/www"
   },
   "dependencies": {
+    "cashfree-pg": "^4.1.2",
     "cookie-parser": "~1.4.4",
     "cookie-session": "^2.1.0",
     "debug": "~2.6.9",

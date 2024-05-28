@@ -46,7 +46,7 @@
                           </tr>
                         </thead>
                         <tbody>
-                            <% for(let x=0;x<cart_data.length;x++) { %>
+                            <% for(let x=0;x < cart_data.items.length; x++) { %>
                             <tr>
                                 <th scope="row">
                                     <div class="d-flex align-items-center">
@@ -54,10 +54,10 @@
                                     </div>
                                 </th>
                                 <td>
-                                    <p class="mb-0 mt-4"><%= cart_data[x].detail.name %></p>
+                                    <p class="mb-0 mt-4"><%= cart_data.items[x].detail.name %></p>
                                 </td>
                                 <td>
-                                    <p class="mb-0 mt-4"><%= cart_data[x].detail.price %> $</p>
+                                    <p class="mb-0 mt-4"><%= cart_data.items[x].detail.price %> $</p>
                                 </td>
                                 <td>
                                     <div class="input-group quantity mt-4" style="width: 100px;">
@@ -66,7 +66,7 @@
                                             <i class="fa fa-minus"></i>
                                             </button>
                                         </div>
-                                        <input type="text" class="form-control form-control-sm text-center border-0" value="<%= cart_data[x].qty %>">
+                                        <input type="text" class="form-control form-control-sm text-center border-0" value="<%= cart_data.items[x].qty %>">
                                         <div class="input-group-btn">
                                             <button class="btn btn-sm btn-plus rounded-circle bg-light border">
                                                 <i class="fa fa-plus"></i>
@@ -75,7 +75,7 @@
                                     </div>
                                 </td>
                                 <td>
-                                    <p class="mb-0 mt-4"><%= cart_data[x].detail.price*cart_data[x].qty %> $</p>
+                                    <p class="mb-0 mt-4"><%= cart_data.items[x].detail.price*cart_data.items[x].qty %> $</p>
                                 </td>
                                 <td>
                                     <button class="btn btn-md rounded-circle bg-light border mt-4" >
@@ -89,18 +89,19 @@
                     </table>
                 </div>
                 <div class="mt-5">
-                    <input type="text" class="border-0 border-bottom rounded me-5 py-3 mb-4" placeholder="Coupon Code">
-                    <button class="btn border-secondary rounded-pill px-4 py-3 text-primary" type="button">Apply Coupon</button>
+                    <input id="coupon_code" type="text" class="border-0 border-bottom rounded me-5 py-3 mb-4" placeholder="Coupon Code">
+                    <button id="coupon_btn" class="btn border-secondary rounded-pill px-4 py-3 text-primary" type="button">Apply Coupon</button>
                 </div>
                 <div class="row g-4 justify-content-end">
                     <div class="col-8"></div>
                     <div class="col-sm-8 col-md-7 col-lg-6 col-xl-4">
+                        
                         <div class="bg-light rounded">
                             <div class="p-4">
                                 <h1 class="display-6 mb-4">Cart <span class="fw-normal">Total</span></h1>
                                 <div class="d-flex justify-content-between mb-4">
                                     <h5 class="mb-0 me-4">Subtotal:</h5>
-                                    <p class="mb-0">$96.00</p>
+                                    <p class="mb-0"><%= cart_data.total %></p>
                                 </div>
                                 <div class="d-flex justify-content-between">
                                     <h5 class="mb-0 me-4">Shipping</h5>
@@ -108,13 +109,22 @@
                                         <p class="mb-0">Flat rate: $3.00</p>
                                     </div>
                                 </div>
-                                <p class="mb-0 text-end">Shipping to Ukraine.</p>
+                                <div id="discount_div" style="visibility: hidden;" class="d-flex justify-content-between">
+                                    <h5 class="mb-0 me-4">Discount</h5>
+                                    <div class="">
+                                        <p class="mb-0" id="discount_precent"></p>
+                                    </div>
+                                </div>
+                                <p class="mb-0 text-end">Shipping to India.</p>
                             </div>
                             <div class="py-4 mb-4 border-top border-bottom d-flex justify-content-between">
                                 <h5 class="mb-0 ps-4 me-4">Total</h5>
-                                <p class="mb-0 pe-4">$99.00</p>
+                                <p id="total" class="mb-0 pe-4"><%= cart_data.total + 3 %></p>
                             </div>
-                            <button class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4" type="button">Proceed Checkout</button>
+                            <form action="/product/checkout" method="post">
+                                <input type="hidden" name="coupon" id="coupon">
+                                <button class="btn border-secondary rounded-pill px-4 py-3 text-primary text-uppercase mb-4 ms-4" type="submit">Proceed Checkout</button>
+                            </form>
                         </div>
                     </div>
                 </div>
@@ -125,6 +135,22 @@
 
         <%- include('./common/Footer') %>
         <%- include('./common/scripts') %>
+        <script>
+            function applyCoupon() {
+                const code = document.getElementById("coupon_code").value
+                const data = <%- JSON.stringify(cart_data) %>
+                let new_total = data.total
+                if(code == "FIRST10"){
+                    new_total = new_total*0.9
+                    document.getElementById("total").innerText = new_total
+                    document.getElementById("discount_precent").innerText = "10%"
+                    document.getElementById("discount_div").style = "visibility:visible"
+                    document.getElementById("coupon").value = 10
+                }
+                console.log(code)
+            }
+            document.getElementById("coupon_btn").addEventListener("click",applyCoupon)
+        </script>
     </body>
 
 </html>
